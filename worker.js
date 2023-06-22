@@ -31,5 +31,3 @@ parentPort.on('message', message => {
     let result = parseCSV(filePath);
 })
 
-
-// node index.js csv_folder
