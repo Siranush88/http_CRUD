@@ -13,11 +13,7 @@ server.on('request', async (req, res) => {
 
     if (req.method === 'POST' && items[1] === 'exports') {
         try {
-            const body = await getRequestBody(req);
-            const { directoryPath } = JSON.parse(body);
-
-            await CsvToJson(directoryPath);
-
+            await CsvToJson(items[2]);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'CSV files converted and saved.' }));
         } catch (err) {
@@ -42,7 +38,9 @@ server.on('request', async (req, res) => {
                 res.end(JSON.stringify({ error: 'File not found.' }));
             }
         } else {
+            const jsonFileArray = await readdir('./converted')
             res.end(JSON.stringify(jsonFileArray));
+
         }
     } else if (req.method === 'DELETE' && items[1] === 'files') {
         const filename = items[2];
@@ -64,23 +62,7 @@ server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`)
 })
 
-function getRequestBody(req) {
-    return new Promise((resolve, reject) => {
-      let body = '';
-  
-      req.on('data', (chunk) => {
-        body += chunk;
-      });
-  
-      req.on('end', () => {
-        resolve(body);
-      });
-  
-      req.on('error', (error) => {
-        reject(error);
-      });
-    });
-  }
+
 
 
 
